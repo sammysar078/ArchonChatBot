@@ -8,6 +8,10 @@ router = Router()
 
 @router.message()
 async def chat(message: Message):
+    # Private chat only.
+    if message.chat.type != "private":
+        return
+
     if not message.text:
         await message.answer("I can understand text messages for now.")
         return
