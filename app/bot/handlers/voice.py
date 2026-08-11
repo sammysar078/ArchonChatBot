@@ -5,6 +5,7 @@ from aiogram import Router
 from aiogram.types import FSInputFile, Message
 
 from app.ai.provider import generate_reply
+from app.services.users import is_voice_enabled
 from app.voice.stt import transcribe_voice
 from app.voice.tts import generate_voice
 
@@ -32,8 +33,8 @@ async def voice_message(message: Message):
 
     reply = await generate_reply(message.from_user.id, text)
 
-    # Future: user voice preference
-    use_voice_reply = False
+    # Check user's voice mode
+    use_voice_reply = await is_voice_enabled(message.from_user.id)
 
     if use_voice_reply:
         ok = await generate_voice(reply, output_path)
