@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: archonchatbot
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m app.main
+    autoDeploy: true
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OWNER_ID
+        sync: false
+      - key: DATABASE_URL
+        value: sqlite+aiosqlite:///./archon.db
+      - key: REDIS_URL
+        value: redis://localhost:6379/0
