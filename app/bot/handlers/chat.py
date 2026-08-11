@@ -12,5 +12,5 @@ async def chat(message: Message):
         await message.answer("I can understand text messages for now.")
         return
 
-    reply = await generate_reply(message.text)
+    reply = await generate_reply(message.from_user.id, message.text)
     await message.answer(reply)
