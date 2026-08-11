@@ -5,6 +5,7 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
 from app.bot.handlers import router
+from app.bot.middlewares.maintenance import MaintenanceMiddleware
 from app.config import settings
 from app.db.session import init_db
 
@@ -14,6 +15,11 @@ bot = Bot(
 )
 
 dp = Dispatcher()
+
+# Maintenance middleware
+dp.message.middleware(MaintenanceMiddleware())
+
+# Register all handlers
 dp.include_router(router)
 
 
