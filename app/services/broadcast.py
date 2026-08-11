@@ -1,22 +1,10 @@
 from aiogram import Bot
-from sqlalchemy import select
 
-from app.db.session import AsyncSessionLocal
-from app.db.models import UserMemory
-
-
-async def get_all_user_ids():
-    """
-    Temporary user source.
-    Later we will use a dedicated users table.
-    """
-    async with AsyncSessionLocal() as session:
-        result = await session.execute(select(UserMemory.user_id).distinct())
-        return list(result.scalars().all())
+from app.services.users import get_all_users
 
 
 async def broadcast_message(bot: Bot, text: str):
-    users = await get_all_user_ids()
+    users = await get_all_users()
 
     success = 0
     failed = 0
