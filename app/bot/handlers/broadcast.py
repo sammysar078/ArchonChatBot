@@ -30,15 +30,16 @@ async def broadcast(message: Message):
 
     text = parts[1]
 
-    await message.answer("Broadcast started...")
+    progress = await message.answer("Broadcast started...")
 
-    success, failed = await broadcast_message(message.bot, text)
+    success, failed, total = await broadcast_message(message.bot, text)
 
     result = (
-        "Broadcast completed.\\n\\n"
-        f"Success: {success}\\n"
-        f"Failed: {failed}"
+        "📢 <b>Broadcast Completed</b>\\n\\n"
+        f"<b>Total:</b> {total}\\n"
+        f"<b>Success:</b> {success}\\n"
+        f"<b>Failed:</b> {failed}"
     )
 
-    await log_event(message.bot, "📢 " + result)
-    await message.answer(result)
+    await progress.edit_text(result)
+    await log_event(message.bot, result)
