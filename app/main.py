@@ -6,6 +6,7 @@ from aiogram.enums import ParseMode
 
 from app.bot.handlers import router
 from app.config import settings
+from app.db.session import init_db
 
 bot = Bot(
     token=settings.BOT_TOKEN,
@@ -17,6 +18,10 @@ dp.include_router(router)
 
 
 async def main():
+    # Database initialize
+    await init_db()
+
+    # Start Telegram bot
     await dp.start_polling(bot)
 
 
