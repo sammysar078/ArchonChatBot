@@ -6,6 +6,18 @@ class Base(DeclarativeBase):
     pass
 
 
+class User(Base):
+    __tablename__ = "users"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(index=True, unique=True)
+    username: Mapped[str] = mapped_column(String(100), default="")
+    full_name: Mapped[str] = mapped_column(String(200), default="")
+    language: Mapped[str] = mapped_column(String(20), default="auto")
+    voice_enabled: Mapped[bool] = mapped_column(default=False)
+    voice_gender: Mapped[str] = mapped_column(String(20), default="female")
+
+
 class UserMemory(Base):
     __tablename__ = "user_memories"
 
