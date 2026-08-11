@@ -1,30 +1,44 @@
-from telegram import Update
-from telegram.ext import ContextTypes
+from aiogram import Router
+from aiogram.filters import Command
+from aiogram.types import Message
 
-from app.config import OWNER_ID
+from app.services.broadcast import broadcast_message
+from app.services.logger import log_event
+from app.services.permissions import (
+    has_permission,
+    is_owner,
+)
+
+router = Router()
 
 
-async def broadcast_command(
-    update: Update,
-    context: ContextTypes.DEFAULT_TYPE,
-):
-    if update.effective_user.id != OWNER_ID:
+@router.message(Command("broadcast"))
+async def broadcast(message: Message):
+    user_id = message.from_user.id
+
+    if not (
+        await is_owner(user_id)
+        or await has_permission(user_id, "broadcast")
+    ):
+        await message.answer("Permission denied.")
         return
 
-    if not context.args:
-        await update.message.reply_text(
-            "❌ Broadcast message missing.\n\n"
-            "Example:\n"
-            "/broadcast Hello everyone!"
-        )
+    parts = (message.text or "").split(maxsplit=1)
+    if len(parts) != 2:
+        await message.answer("Usage: /broadcast <message>")
         return
 
-    message = " ".join(context.args)
+    text = parts[1]
 
-    # Temporary response.
-    # User database se recipients next step mein connect karenge.
-    await update.message.reply_text(
-        "📢 Broadcast system received your message.\n\n"
-        f"Message:\n{message}\n\n"
-        "⏳ Recipients database integration next step mein add karenge."
+    await message.answer("Broadcast started...")
+
+    success, failed = await broadcast_message(message.bot, text)
+
+    result = (
+        "Broadcast completed.\\n\\n"
+        f"Success: {success}\\n"
+        f"Failed: {failed}"
     )
+
+    await log_event(message.bot, "📢 " + result)
+    await message.answer(result)
