@@ -1,0 +1,14 @@
+from app.config import settings
+
+# Temporary in-memory maintenance state.
+# Later we will move this to the database.
+MAINTENANCE_MODE = settings.MAINTENANCE
+
+
+def is_maintenance() -> bool:
+    return MAINTENANCE_MODE
+
+
+def set_maintenance(value: bool):
+    global MAINTENANCE_MODE
+    MAINTENANCE_MODE = value
